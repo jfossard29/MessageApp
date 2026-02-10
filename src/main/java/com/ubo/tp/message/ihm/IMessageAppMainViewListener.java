@@ -1,5 +1,7 @@
 package main.java.com.ubo.tp.message.ihm;
 
+import main.java.com.ubo.tp.message.datamodel.User;
+
 /**
  * Interface pour écouter les événements de la vue principale.
  */
@@ -21,4 +23,10 @@ public interface IMessageAppMainViewListener {
      * Déconnecte l'utilisateur courant.
      */
     void logout();
+
+    /**
+     * Récupère l'utilisateur courant.
+     * @return L'utilisateur connecté ou null.
+     */
+    User getCurrentUser();
 }

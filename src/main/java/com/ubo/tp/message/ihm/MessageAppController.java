@@ -6,7 +6,7 @@ import main.java.com.ubo.tp.message.datamodel.User;
 /**
  * Controller pour la vue principale.
  */
-public class MessageAppController {
+public class MessageAppController implements IMessageAppMainViewListener {
 
     protected DataManager mDataManager;
     protected MessageAppMainView mView;
@@ -15,8 +15,10 @@ public class MessageAppController {
     public MessageAppController(DataManager dataManager, MessageAppMainView view) {
         this.mDataManager = dataManager;
         this.mView = view;
+        this.mView.setListener(this);
     }
 
+    @Override
     public boolean registerUser(String name, String tag, String password) {
         for (User user : this.mDataManager.getUsers()) {
             if (user.getUserTag().equals(tag)) {
@@ -28,6 +30,7 @@ public class MessageAppController {
         return true;
     }
 
+    @Override
     public boolean authenticate(String tag, String password) {
         for (User user : this.mDataManager.getUsers()) {
             if (user.getUserTag().equals(tag) && user.getUserPassword().equals(password)) {
@@ -39,11 +42,13 @@ public class MessageAppController {
         return false;
     }
 
+    @Override
     public void logout() {
         this.mCurrentUser = null;
         this.mView.showLoggedOut();
     }
 
+    @Override
     public User getCurrentUser() {
         return this.mCurrentUser;
     }

@@ -72,7 +72,6 @@ public class MessageApp implements IDatabaseObserver {
 	protected void initGui() {
 		this.mMainView = new MessageAppMainView();
 		this.mController = new MessageAppController(mDataManager, mMainView);
-		this.mMainView.setController(mController);
 		this.mMainView.init();
 	}
 
@@ -83,7 +82,8 @@ public class MessageApp implements IDatabaseObserver {
 	 * pouvoir utiliser l'application</b>
 	 */
 	protected void initDirectory() {
-		JFileChooser chooser = new JFileChooser();
+		// "." correspond au répertoire courant (la racine du projet lors de l'exécution)
+		JFileChooser chooser = new JFileChooser(".");
 		chooser.setDialogTitle("Sélectionnez le répertoire d'échange");
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int returnVal = chooser.showOpenDialog(mMainView.mFrame);
