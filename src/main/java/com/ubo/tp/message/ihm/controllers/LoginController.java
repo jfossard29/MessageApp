@@ -1,21 +1,16 @@
-package main.java.com.ubo.tp.message.ihm;
+package main.java.com.ubo.tp.message.ihm.controllers;
 
 import main.java.com.ubo.tp.message.core.DataManager;
 import main.java.com.ubo.tp.message.datamodel.User;
 
-/**
- * Controller pour la vue principale.
- */
-public class MessageAppController implements IMessageAppMainViewListener {
+public class LoginController implements ILoginController {
 
-    protected DataManager mDataManager;
-    protected MessageAppMainView mView;
-    protected User mCurrentUser;
+    private final DataManager mDataManager;
+    private final MessageAppController mMainController;
 
-    public MessageAppController(DataManager dataManager, MessageAppMainView view) {
+    public LoginController(DataManager dataManager, MessageAppController mainController) {
         this.mDataManager = dataManager;
-        this.mView = view;
-        this.mView.setListener(this);
+        this.mMainController = mainController;
     }
 
     @Override
@@ -27,6 +22,10 @@ public class MessageAppController implements IMessageAppMainViewListener {
         }
         User newUser = new User(tag, password, name);
         this.mDataManager.sendUser(newUser);
+        
+        // Connexion automatique après enregistrement via le contrôleur principal
+        this.mMainController.loginSuccess(newUser);
+
         return true;
     }
 
@@ -34,22 +33,10 @@ public class MessageAppController implements IMessageAppMainViewListener {
     public boolean authenticate(String tag, String password) {
         for (User user : this.mDataManager.getUsers()) {
             if (user.getUserTag().equals(tag) && user.getUserPassword().equals(password)) {
-                this.mCurrentUser = user;
-                this.mView.showLoggedIn(user);
+                this.mMainController.loginSuccess(user);
                 return true;
             }
         }
         return false;
-    }
-
-    @Override
-    public void logout() {
-        this.mCurrentUser = null;
-        this.mView.showLoggedOut();
-    }
-
-    @Override
-    public User getCurrentUser() {
-        return this.mCurrentUser;
     }
 }

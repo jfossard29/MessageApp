@@ -1,15 +1,17 @@
-package main.java.com.ubo.tp.message.ihm;
+package main.java.com.ubo.tp.message.ihm.views;
+
+import main.java.com.ubo.tp.message.ihm.controllers.ILoginController;
 
 import javax.swing.*;
 import java.awt.*;
 
 /**
  * Vue dédiée à l'authentification et l'enregistrement.
- * Design inspiré de Discord (Dark Theme).
+ * Design inspiré de Discord (et fait par Gemini).
  */
 public class LoginView extends JPanel {
 
-    protected IMessageAppMainViewListener mListener;
+    protected ILoginController mController;
     protected boolean isRegistrationMode = true;
 
     // Couleurs Discord-like
@@ -25,8 +27,8 @@ public class LoginView extends JPanel {
     private JPasswordField mPassField;
     private JLabel mLabelNom;
 
-    public LoginView(IMessageAppMainViewListener listener) {
-        this.mListener = listener;
+    public LoginView(ILoginController controller) {
+        this.mController = controller;
         this.initGui();
     }
 
@@ -134,7 +136,7 @@ public class LoginView extends JPanel {
         });
 
         btnValider.addActionListener(e -> {
-            if (mListener != null) {
+            if (mController != null) {
                 String tag = mTagField.getText();
                 String pwd = new String(mPassField.getPassword());
                 
@@ -142,14 +144,14 @@ public class LoginView extends JPanel {
                     String nom = mNomField.getText();
                     if(nom.isEmpty() || tag.isEmpty() || pwd.isEmpty()) return;
                     
-                    boolean success = mListener.registerUser(nom, tag, pwd);
+                    boolean success = mController.registerUser(nom, tag, pwd);
                     if (!success) {
                         JOptionPane.showMessageDialog(this, "Ce tag existe déjà.", "Erreur", JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
                     if(tag.isEmpty() || pwd.isEmpty()) return;
                     
-                    boolean success = mListener.authenticate(tag, pwd);
+                    boolean success = mController.authenticate(tag, pwd);
                     if (!success) {
                         JOptionPane.showMessageDialog(this, "Identifiants incorrects.", "Erreur", JOptionPane.ERROR_MESSAGE);
                     }

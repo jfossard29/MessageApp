@@ -4,9 +4,12 @@ import java.io.File;
 
 import main.java.com.ubo.tp.message.core.DataManager;
 import main.java.com.ubo.tp.message.core.database.IDatabaseObserver;
+import main.java.com.ubo.tp.message.core.session.ISession;
+import main.java.com.ubo.tp.message.core.session.Session;
 import main.java.com.ubo.tp.message.datamodel.Channel;
 import main.java.com.ubo.tp.message.datamodel.Message;
 import main.java.com.ubo.tp.message.datamodel.User;
+import main.java.com.ubo.tp.message.ihm.controllers.MessageAppController;
 
 import javax.swing.*;
 
@@ -20,6 +23,11 @@ public class MessageApp implements IDatabaseObserver {
 	 * Base de données.
 	 */
 	protected DataManager mDataManager;
+
+	/**
+	 * Session de l'application.
+	 */
+	protected ISession mSession;
 
 	/**
 	 * Vue principale de l'application.
@@ -70,9 +78,10 @@ public class MessageApp implements IDatabaseObserver {
 	 * Initialisation de l'interface graphique.
 	 */
 	protected void initGui() {
+		this.mSession = new Session();
 		this.mMainView = new MessageAppMainView();
-		this.mController = new MessageAppController(mDataManager, mMainView);
-		this.mMainView.init();
+		this.mController = new MessageAppController(mDataManager, mSession, mMainView);
+		this.mController.initView();
 	}
 
 	/**

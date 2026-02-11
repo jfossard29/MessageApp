@@ -2,6 +2,9 @@ package main.java.com.ubo.tp.message.ihm;
 
 import main.java.com.ubo.tp.message.datamodel.User;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * Interface pour écouter les événements de la vue principale.
  */
@@ -29,4 +32,10 @@ public interface IMessageAppMainViewListener {
      * @return L'utilisateur connecté ou null.
      */
     User getCurrentUser();
+
+    /**
+     * Récupère la liste des utilisateurs enregistrés.
+     * @return La liste des utilisateurs.
+     */
+    Set<User> getAllUser();
 }

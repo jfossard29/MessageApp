@@ -1,6 +1,11 @@
 package main.java.com.ubo.tp.message.ihm;
 
 import main.java.com.ubo.tp.message.datamodel.User;
+import main.java.com.ubo.tp.message.ihm.controllers.IChannelController;
+import main.java.com.ubo.tp.message.ihm.controllers.ILoginController;
+import main.java.com.ubo.tp.message.ihm.controllers.ISessionController;
+import main.java.com.ubo.tp.message.ihm.views.LoginView;
+import main.java.com.ubo.tp.message.ihm.views.HomeView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,17 +19,12 @@ public class MessageAppMainView {
     protected JFrame mFrame;
     protected JPanel mMainContainer;
     protected CardLayout mLayout;
-    protected IMessageAppMainViewListener mListener;
 
     // Vues enfants
     protected LoginView mLoginView;
-    protected SessionView mSessionView;
+    protected HomeView mHomeView;
 
-    public void setListener(IMessageAppMainViewListener listener) {
-        this.mListener = listener;
-    }
-
-    public void init() {
+    public void init(ILoginController loginController, ISessionController sessionController, IChannelController channelController) {
         // Configuration de la fenêtre principale
         mFrame = new JFrame("MessageApp");
         mFrame.setSize(1200, 800); // Taille plus grande pour le style desktop
@@ -35,11 +35,11 @@ public class MessageAppMainView {
         mLayout = new CardLayout();
         mMainContainer = new JPanel(mLayout);
         
-        mLoginView = new LoginView(mListener);
-        mSessionView = new SessionView(mListener);
+        mLoginView = new LoginView(loginController);
+        mHomeView = new HomeView(sessionController, channelController);
 
         mMainContainer.add(mLoginView, "LOGIN");
-        mMainContainer.add(mSessionView, "SESSION");
+        mMainContainer.add(mHomeView, "SESSION");
 
         mFrame.add(mMainContainer, BorderLayout.CENTER);
         
@@ -50,7 +50,7 @@ public class MessageAppMainView {
     }
 
     public void showLoggedIn(User user) {
-        mSessionView.setUser(user);
+        mHomeView.setUser(user);
         mLayout.show(mMainContainer, "SESSION");
     }
 
