@@ -2,6 +2,7 @@ package main.java.com.ubo.tp.message.ihm;
 
 import main.java.com.ubo.tp.message.datamodel.User;
 import main.java.com.ubo.tp.message.ihm.controllers.IChannelController;
+import main.java.com.ubo.tp.message.ihm.controllers.IChatController;
 import main.java.com.ubo.tp.message.ihm.controllers.ILoginController;
 import main.java.com.ubo.tp.message.ihm.controllers.ISessionController;
 import main.java.com.ubo.tp.message.ihm.views.LoginView;
@@ -23,8 +24,22 @@ public class MessageAppMainView {
     // Vues enfants
     protected LoginView mLoginView;
     protected HomeView mHomeView;
+    
+    protected ILoginController mLoginController;
+    protected ISessionController mSessionController;
+    protected IChannelController mChannelController;
+    protected IChatController mChatController;
 
-    public void init(ILoginController loginController, ISessionController sessionController, IChannelController channelController) {
+    public void init(ILoginController loginController, ISessionController sessionController, IChannelController channelController, IChatController chatController) {
+        this.mLoginController = loginController;
+        this.mSessionController = sessionController;
+        this.mChannelController = channelController;
+        this.mChatController = chatController;
+        
+        this.initGui();
+    }
+    
+    protected void initGui() {
         // Configuration de la fenêtre principale
         mFrame = new JFrame("MessageApp");
         mFrame.setSize(1200, 800); // Taille plus grande pour le style desktop
@@ -35,8 +50,8 @@ public class MessageAppMainView {
         mLayout = new CardLayout();
         mMainContainer = new JPanel(mLayout);
         
-        mLoginView = new LoginView(loginController);
-        mHomeView = new HomeView(sessionController, channelController);
+        mLoginView = new LoginView(mLoginController);
+        mHomeView = new HomeView(mSessionController, mChannelController, mChatController);
 
         mMainContainer.add(mLoginView, "LOGIN");
         mMainContainer.add(mHomeView, "SESSION");

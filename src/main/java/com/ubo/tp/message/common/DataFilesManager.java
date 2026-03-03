@@ -66,6 +66,11 @@ public class DataFilesManager {
 	 */
 	protected static final String PROPERTY_KEY_CHANNEL_CREATOR = "Creator";
 
+    /**
+     * Clé du fichier de propriété pour l'attribut Online
+     */
+    protected static final String PROPERTY_KEY_USER_ONLINE = "Online";
+
 	/**
 	 * Clé du fichier de propriété pour l'attribut Users
 	 */
@@ -96,8 +101,10 @@ public class DataFilesManager {
 			String tag = properties.getProperty(PROPERTY_KEY_USER_TAG, "NoTag");
 			String password = decrypt(properties.getProperty(PROPERTY_KEY_USER_PASSWORD, "NoPassword"));
 			String name = properties.getProperty(PROPERTY_KEY_NAME, "NoName");
+            Boolean online = Boolean.getBoolean(properties.getProperty(PROPERTY_KEY_USER_ONLINE, "false"));
 
 			user = new User(UUID.fromString(uuid), tag, password, name);
+            user.setOnline(online);
 		}
 
 		return user;
@@ -118,6 +125,7 @@ public class DataFilesManager {
 		properties.setProperty(PROPERTY_KEY_USER_TAG, user.getUserTag());
 		properties.setProperty(PROPERTY_KEY_USER_PASSWORD, encrypt(user.getUserPassword()));
 		properties.setProperty(PROPERTY_KEY_NAME, user.getName());
+        properties.setProperty(PROPERTY_KEY_USER_ONLINE, Boolean.toString(user.isOnline()));
 
 		PropertiesManager.writeProperties(properties, destFileName);
 	}
@@ -236,6 +244,10 @@ public class DataFilesManager {
 		return user;
 	}
 
+    public void updateUserOnlineStatus(User user) {
+        this.writeUserFile(user);
+    }
+
 	/**
 	 * Retourne un chemin d'accès au fichier pour l'uuid et l'extension donnés.
 	 *
@@ -266,7 +278,7 @@ public class DataFilesManager {
 
 		Iterator<User> iterator = users.iterator();
 		while (iterator.hasNext()) {
-			usersAsString += iterator.next();
+			usersAsString += iterator.next().getUuid();
 
 			if (iterator.hasNext()) {
 				usersAsString += USER_SEPARATOR;

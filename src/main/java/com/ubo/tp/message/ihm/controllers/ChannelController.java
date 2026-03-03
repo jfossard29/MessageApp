@@ -5,6 +5,7 @@ import main.java.com.ubo.tp.message.core.session.ISession;
 import main.java.com.ubo.tp.message.datamodel.Channel;
 import main.java.com.ubo.tp.message.datamodel.User;
 
+import java.util.List;
 import java.util.Set;
 
 public class ChannelController implements IChannelController {
@@ -24,7 +25,7 @@ public class ChannelController implements IChannelController {
             return false;
         }
 
-        // Vérifier si le canal existe déjà (optionnel, mais recommandé)
+        // Vérifier si le canal existe déjà
         for (Channel c : mDataManager.getChannels()) {
             if (c.getName().equalsIgnoreCase(name)) {
                 return false;
@@ -32,6 +33,25 @@ public class ChannelController implements IChannelController {
         }
 
         Channel newChannel = new Channel(creator, name);
+        mDataManager.sendChannel(newChannel);
+        return true;
+    }
+
+    @Override
+    public boolean createChannel(String name, List<User> users) {
+        User creator = mSession.getConnectedUser();
+        if (creator == null || name == null || name.trim().isEmpty()) {
+            return false;
+        }
+
+        // Vérifier si le canal existe déjà
+        for (Channel c : mDataManager.getChannels()) {
+            if (c.getName().equalsIgnoreCase(name)) {
+                return false;
+            }
+        }
+
+        Channel newChannel = new Channel(creator, name, users);
         mDataManager.sendChannel(newChannel);
         return true;
     }

@@ -78,7 +78,7 @@ public class MessageApp implements IDatabaseObserver {
 	 * Initialisation de l'interface graphique.
 	 */
 	protected void initGui() {
-		this.mSession = new Session();
+		this.mSession = new Session(mDataManager);
 		this.mMainView = new MessageAppMainView();
 		this.mController = new MessageAppController(mDataManager, mSession, mMainView);
 		this.mController.initView();

@@ -2,6 +2,7 @@ package main.java.com.ubo.tp.message.ihm.views;
 
 import main.java.com.ubo.tp.message.datamodel.User;
 import main.java.com.ubo.tp.message.ihm.controllers.IChannelController;
+import main.java.com.ubo.tp.message.ihm.controllers.IChatController;
 import main.java.com.ubo.tp.message.ihm.controllers.ISessionController;
 
 import javax.swing.*;
@@ -15,14 +16,16 @@ public class HomeView extends JPanel {
 
     protected ISessionController mSessionController;
     protected IChannelController mChannelController;
+    protected IChatController mChatController;
     
     // Sous-vues
     protected SidebarView mSidebarView;
     protected ChatView mChatView;
 
-    public HomeView(ISessionController sessionController, IChannelController channelController) {
+    public HomeView(ISessionController sessionController, IChannelController channelController, IChatController chatController) {
         this.mSessionController = sessionController;
         this.mChannelController = channelController;
+        this.mChatController = chatController;
         this.initGui();
     }
 
@@ -32,7 +35,7 @@ public class HomeView extends JPanel {
 
         // Initialisation des sous-vues
         this.mSidebarView = new SidebarView(this.mSessionController, this.mChannelController);
-        this.mChatView = new ChatView(this.mSessionController);
+        this.mChatView = new ChatView(this.mSessionController, this.mChatController);
 
         // Ajout de la Sidebar (à gauche)
         gbc.gridx = 0;

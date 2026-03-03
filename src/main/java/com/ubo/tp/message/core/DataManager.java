@@ -135,6 +135,10 @@ public class DataManager implements IDatabaseObserver {
 		this.mEntityManager.writeChannelFile(channel);
 	}
 
+    public void updateUserOnlineStatus(User user) {
+        this.mEntityManager.updateUserOnlineStatus(user);
+    }
+
 	/**
 	 * Retourne tous les Messages d'un utilisateur.
 	 *

@@ -3,6 +3,7 @@ package main.java.com.ubo.tp.message.core.session;
 import java.util.ArrayList;
 import java.util.List;
 
+import main.java.com.ubo.tp.message.core.DataManager;
 import main.java.com.ubo.tp.message.datamodel.User;
 
 /**
@@ -22,6 +23,19 @@ public class Session implements ISession {
 	 */
 	protected List<ISessionObserver> mObservers = new ArrayList<>();
 
+	/**
+	 * Gestionnaire de données.
+	 */
+	protected DataManager mDataManager;
+
+	/**
+	 * Constructeur.
+	 * @param dataManager
+	 */
+	public Session(DataManager dataManager) {
+		this.mDataManager = dataManager;
+	}
+
 	@Override
 	public void addObserver(ISessionObserver observer) {
 		this.mObservers.add(observer);
@@ -40,6 +54,8 @@ public class Session implements ISession {
 	@Override
 	public void connect(User connectedUser) {
 		this.mConnectedUser = connectedUser;
+        this.mConnectedUser.setOnline(true);
+		this.mDataManager.updateUserOnlineStatus(this.mConnectedUser);
 
 		for (ISessionObserver observer : mObservers) {
 			observer.notifyLogin(connectedUser);
@@ -48,6 +64,8 @@ public class Session implements ISession {
 
 	@Override
 	public void disconnect() {
+        this.mConnectedUser.setOnline(false);
+		this.mDataManager.updateUserOnlineStatus(this.mConnectedUser);
 		this.mConnectedUser = null;
 
 		for (ISessionObserver observer : mObservers) {

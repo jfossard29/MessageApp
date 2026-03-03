@@ -1,6 +1,8 @@
 package main.java.com.ubo.tp.message.ihm.controllers;
 
+import main.java.com.ubo.tp.message.datamodel.Channel;
 import main.java.com.ubo.tp.message.datamodel.User;
+
 import java.util.Set;
 
 /**
@@ -23,4 +25,33 @@ public interface ISessionController {
      * @return La liste des utilisateurs.
      */
     Set<User> getAllUsers();
+
+    /**
+     * Sélectionne un canal pour afficher ses messages.
+     * @param channel Le canal à sélectionner.
+     */
+    void selectChannel(Channel channel);
+
+    /**
+     * Récupère le canal actuellement sélectionné.
+     * @return Le canal sélectionné ou null.
+     */
+    Channel getSelectedChannel();
+
+    /**
+     * Ajoute un observateur pour les changements de sélection de canal.
+     * @param observer L'observateur à ajouter.
+     */
+    void addObserver(ISessionControllerObserver observer);
+    
+    /**
+     * Supprime un observateur.
+     * @param observer L'observateur à supprimer.
+     */
+    void removeObserver(ISessionControllerObserver observer);
+    
+    interface ISessionControllerObserver {
+        void onChannelSelected(Channel channel);
+        void onUsersUpdated();
+    }
 }

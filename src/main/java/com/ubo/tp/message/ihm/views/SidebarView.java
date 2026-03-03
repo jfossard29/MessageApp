@@ -13,11 +13,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class SidebarView extends JPanel {
+public class SidebarView extends JPanel implements ISessionController.ISessionControllerObserver {
     // Couleurs Discord-like
     private final Color COLOR_SIDEBAR = new Color(32, 34, 37);
     private final Color COLOR_TEXT = new Color(220, 221, 222);
     private final Color COLOR_INPUT = new Color(64, 68, 75);
+    private final Color COLOR_SELECTED = new Color(57, 60, 67);
 
     protected ISessionController mSessionController;
     protected IChannelController mChannelController;
@@ -33,6 +34,7 @@ public class SidebarView extends JPanel {
     public SidebarView(ISessionController sessionController, IChannelController channelController) {
         this.mSessionController = sessionController;
         this.mChannelController = channelController;
+        this.mSessionController.addObserver(this);
         this.listAllUsers = new HashSet<>();
         this.listAllUsersFiltered = new HashSet<>();
         this.listAllChannels = new HashSet<>();
@@ -72,7 +74,7 @@ public class SidebarView extends JPanel {
         addChannelBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         addChannelBtn.setToolTipText("Créer un canal");
         addChannelBtn.addActionListener(e -> {
-            AddChannelDialog dialog = new AddChannelDialog((Frame) SwingUtilities.getWindowAncestor(this), mChannelController);
+            AddChannelDialog dialog = new AddChannelDialog((Frame) SwingUtilities.getWindowAncestor(this), mChannelController, listAllUsers);
             dialog.setVisible(true);
             // Rafraichir après fermeture du dialogue
             refreshLists();
@@ -256,6 +258,12 @@ public class SidebarView extends JPanel {
                 channelBtn.setContentAreaFilled(false);
                 channelBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
                 
+                // Action de sélection de canal
+                channelBtn.addActionListener(e -> {
+                    mSessionController.selectChannel(c);
+                    // TODO: Mettre à jour l'UI pour montrer la sélection (changer la couleur de fond du bouton)
+                });
+                
                 mainListPanel.add(channelBtn, gbc);
                 gbc.gridy++;
             }
@@ -273,7 +281,7 @@ public class SidebarView extends JPanel {
             for (User u : listAllUsersFiltered) {
                 if (mCurrentUser != null && u.getUserTag().equals(mCurrentUser.getUserTag())) continue;
 
-                JButton userBtn = new JButton(u.getUserTag());
+                JButton userBtn = new JButton(u.getName());
                 userBtn.setHorizontalAlignment(SwingConstants.LEFT);
                 userBtn.setForeground(new Color(142, 146, 151));
                 userBtn.setBackground(COLOR_SIDEBAR);
@@ -281,6 +289,13 @@ public class SidebarView extends JPanel {
                 userBtn.setFocusPainted(false);
                 userBtn.setContentAreaFilled(false);
                 userBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+                if (u.isOnline()) {
+                    userBtn.setIcon(new StatusIcon(new Color(59, 165, 93), 8));
+                } else {
+                    userBtn.setIcon(new StatusIcon(new Color(116, 127, 141), 8));
+                }
+                userBtn.setIconTextGap(10);
 
                 mainListPanel.add(userBtn, gbc);
                 gbc.gridy++;
@@ -296,5 +311,44 @@ public class SidebarView extends JPanel {
 
         mainListPanel.revalidate();
         mainListPanel.repaint();
+    }
+
+    @Override
+    public void onChannelSelected(Channel channel) {
+        // Ne fait rien ici, géré par ChatView
+    }
+
+    @Override
+    public void onUsersUpdated() {
+        refreshLists();
+    }
+
+    private static class StatusIcon implements Icon {
+        private final Color color;
+        private final int size;
+
+        public StatusIcon(Color color, int size) {
+            this.color = color;
+            this.size = size;
+        }
+
+        @Override
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(color);
+            g2.fillOval(x, y, size, size);
+            g2.dispose();
+        }
+
+        @Override
+        public int getIconWidth() {
+            return size;
+        }
+
+        @Override
+        public int getIconHeight() {
+            return size;
+        }
     }
 }
