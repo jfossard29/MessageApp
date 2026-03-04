@@ -20,6 +20,7 @@ public class MessageAppController implements ISessionObserver {
     protected SessionController mSessionController;
     protected ChannelController mChannelController;
     protected ChatController mChatController;
+    protected ProfileController mProfileController;
 
     public MessageAppController(DataManager dataManager, ISession session, MessageAppMainView view) {
         this.mDataManager = dataManager;
@@ -34,11 +35,12 @@ public class MessageAppController implements ISessionObserver {
         this.mSessionController = new SessionController(mDataManager, this);
         this.mChannelController = new ChannelController(mDataManager, session);
         this.mChatController = new ChatController(mDataManager, session);
+        this.mProfileController = new ProfileController(mDataManager, session);
     }
 
     public void initView() {
         // Initialisation de la vue avec les contrôleurs
-        this.mView.init(mLoginController, mSessionController, mChannelController, mChatController);
+        this.mView.init(mLoginController, mSessionController, mChannelController, mChatController, mProfileController);
     }
 
     /**

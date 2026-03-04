@@ -101,7 +101,7 @@ public class DataFilesManager {
 			String tag = properties.getProperty(PROPERTY_KEY_USER_TAG, "NoTag");
 			String password = decrypt(properties.getProperty(PROPERTY_KEY_USER_PASSWORD, "NoPassword"));
 			String name = properties.getProperty(PROPERTY_KEY_NAME, "NoName");
-            Boolean online = Boolean.getBoolean(properties.getProperty(PROPERTY_KEY_USER_ONLINE, "false"));
+            Boolean online = Boolean.parseBoolean(properties.getProperty(PROPERTY_KEY_USER_ONLINE, "false"));
 
 			user = new User(UUID.fromString(uuid), tag, password, name);
             user.setOnline(online);
@@ -246,6 +246,14 @@ public class DataFilesManager {
 
     public void updateUserOnlineStatus(User user) {
         this.writeUserFile(user);
+    }
+
+    public void deleteUserFile(User user) {
+        String destFileName = this.getFileName(user.getUuid(), Constants.USER_FILE_EXTENSION);
+        File file = new File(destFileName);
+        if (file.exists()) {
+            file.delete();
+        }
     }
 
 	/**

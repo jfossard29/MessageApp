@@ -60,14 +60,35 @@ public class ProfileView extends JDialog {
         this.add(mNameField, gbc);
 
         // Bouton Sauvegarder
-        JButton saveBtn = new JButton("Sauvegarder");
+        JButton saveBtn = new JButton("Sauvegarder") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                if (getModel().isArmed()) {
+                    g.setColor(getBackground().darker());
+                } else {
+                    g.setColor(getBackground());
+                }
+                g.fillRect(0, 0, getWidth(), getHeight());
+                super.paintComponent(g);
+            }
+        };
         saveBtn.setBackground(new Color(88, 101, 242));
         saveBtn.setForeground(Color.WHITE);
         saveBtn.setFocusPainted(false);
         saveBtn.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        saveBtn.setContentAreaFilled(false);
+        saveBtn.setOpaque(false);
+        saveBtn.setBorderPainted(false);
         saveBtn.addActionListener(e -> {
-            mController.updateName(mNameField.getText());
-            dispose();
+            String newName = mNameField.getText();
+            if (newName == null || newName.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Le nom ne peut pas être vide.", "Erreur", JOptionPane.ERROR_MESSAGE);
+            } else if (mController.isNameTaken(newName)) {
+                JOptionPane.showMessageDialog(this, "Ce nom est déjà pris.", "Erreur", JOptionPane.ERROR_MESSAGE);
+            } else {
+                mController.updateDisplayName(newName);
+                dispose();
+            }
         });
         
         gbc.gridy = 3;
@@ -87,11 +108,25 @@ public class ProfileView extends JDialog {
         this.add(dangerLabel, gbc);
 
         // Bouton Supprimer Compte
-        JButton deleteBtn = new JButton("Supprimer mon compte");
+        JButton deleteBtn = new JButton("Supprimer mon compte") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                if (getModel().isArmed()) {
+                    g.setColor(getBackground().darker());
+                } else {
+                    g.setColor(getBackground());
+                }
+                g.fillRect(0, 0, getWidth(), getHeight());
+                super.paintComponent(g);
+            }
+        };
         deleteBtn.setBackground(new Color(237, 66, 69));
         deleteBtn.setForeground(Color.WHITE);
         deleteBtn.setFocusPainted(false);
         deleteBtn.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        deleteBtn.setContentAreaFilled(false);
+        deleteBtn.setOpaque(false);
+        deleteBtn.setBorderPainted(false);
         deleteBtn.addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(this, 
                 "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.", 

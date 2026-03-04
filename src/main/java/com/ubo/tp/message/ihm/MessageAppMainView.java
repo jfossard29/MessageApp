@@ -4,6 +4,7 @@ import main.java.com.ubo.tp.message.datamodel.User;
 import main.java.com.ubo.tp.message.ihm.controllers.IChannelController;
 import main.java.com.ubo.tp.message.ihm.controllers.IChatController;
 import main.java.com.ubo.tp.message.ihm.controllers.ILoginController;
+import main.java.com.ubo.tp.message.ihm.controllers.IProfileController;
 import main.java.com.ubo.tp.message.ihm.controllers.ISessionController;
 import main.java.com.ubo.tp.message.ihm.views.LoginView;
 import main.java.com.ubo.tp.message.ihm.views.HomeView;
@@ -29,12 +30,14 @@ public class MessageAppMainView {
     protected ISessionController mSessionController;
     protected IChannelController mChannelController;
     protected IChatController mChatController;
+    protected IProfileController mProfileController;
 
-    public void init(ILoginController loginController, ISessionController sessionController, IChannelController channelController, IChatController chatController) {
+    public void init(ILoginController loginController, ISessionController sessionController, IChannelController channelController, IChatController chatController, IProfileController profileController) {
         this.mLoginController = loginController;
         this.mSessionController = sessionController;
         this.mChannelController = channelController;
         this.mChatController = chatController;
+        this.mProfileController = profileController;
         
         this.initGui();
     }
@@ -51,7 +54,7 @@ public class MessageAppMainView {
         mMainContainer = new JPanel(mLayout);
         
         mLoginView = new LoginView(mLoginController);
-        mHomeView = new HomeView(mSessionController, mChannelController, mChatController);
+        mHomeView = new HomeView(mSessionController, mChannelController, mChatController, mProfileController);
 
         mMainContainer.add(mLoginView, "LOGIN");
         mMainContainer.add(mHomeView, "SESSION");

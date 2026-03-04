@@ -1,8 +1,12 @@
 package main.java.com.ubo.tp.message.ihm.controllers;
 
+import main.java.com.ubo.tp.message.common.Constants;
 import main.java.com.ubo.tp.message.core.DataManager;
 import main.java.com.ubo.tp.message.core.session.ISession;
+import main.java.com.ubo.tp.message.datamodel.Message;
 import main.java.com.ubo.tp.message.datamodel.User;
+
+import java.util.Set;
 
 public class ProfileController implements IProfileController {
 
@@ -15,23 +19,41 @@ public class ProfileController implements IProfileController {
     }
 
     @Override
-    public void updateName(String newName) {
-        User user = mSession.getConnectedUser();
-        if (user != null && newName != null && !newName.trim().isEmpty()) {
-            user.setName(newName);
-            mDataManager.sendUser(user);
+    public void updateDisplayName(String newName) {
+        User currentUser = mSession.getConnectedUser();
+        if (currentUser != null && newName != null && !newName.trim().isEmpty()) {
+            currentUser.setName(newName);
+            mDataManager.updateUser(currentUser);
         }
     }
 
     @Override
     public void deleteAccount() {
-        User user = mSession.getConnectedUser();
-        if (user != null) {
-            // On déconnecte d'abord l'utilisateur
+        User currentUser = mSession.getConnectedUser();
+        if (currentUser != null) {
+            // 1. Récupérer tous les messages de l'utilisateur
+            Set<Message> userMessages = mDataManager.getMessagesFrom(currentUser);
+
+            // 2. Remplacer l'expéditeur par UNKNOWN_USER
+            for (Message message : userMessages) {
+                // Créer un nouveau message avec l'expéditeur inconnu, mais en gardant le même UUID, date, texte, etc.
+                Message anonymizedMessage = new Message(
+                    message.getUuid(),
+                    Constants.UNKNOWN_USER,
+                    message.getRecipient(),
+                    message.getEmissionDate(),
+                    message.getText()
+                );
+                mDataManager.sendMessage(anonymizedMessage); // Sauvegarder le message modifié (écrasera l'ancien car même UUID)
+            }
+
+            // 3. Déconnecter d'abord (cela va écrire dans le fichier pour mettre Online=false)
+            // On garde une référence vers l'utilisateur car disconnect() va mettre mConnectedUser à null
+            User userToDelete = currentUser;
             mSession.disconnect();
-            
-            // Puis on supprime son compte (fichier)
-            mDataManager.deleteUserAccount(user);
+
+            // 4. Supprimer le fichier de l'utilisateur
+            mDataManager.deleteAccount(userToDelete);
         }
     }
 

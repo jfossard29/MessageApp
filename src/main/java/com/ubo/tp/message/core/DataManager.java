@@ -125,6 +125,22 @@ public class DataManager implements IDatabaseObserver {
 		this.mEntityManager.writeUserFile(user);
 	}
 
+    /**
+     * Met à jour un utilisateur.
+     * @param user
+     */
+    public void updateUser(User user) {
+        this.sendUser(user);
+    }
+
+    /**
+     * Supprime le compte d'un utilisateur.
+     * @param user
+     */
+    public void deleteAccount(User user) {
+        this.mEntityManager.deleteUserAccount(user);
+    }
+
 	/**
 	 * Ecrit un Canal.
 	 *

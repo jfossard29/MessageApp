@@ -3,12 +3,15 @@ package main.java.com.ubo.tp.message.ihm.views;
 import main.java.com.ubo.tp.message.datamodel.Channel;
 import main.java.com.ubo.tp.message.datamodel.User;
 import main.java.com.ubo.tp.message.ihm.controllers.IChannelController;
+import main.java.com.ubo.tp.message.ihm.controllers.IProfileController;
 import main.java.com.ubo.tp.message.ihm.controllers.ISessionController;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,6 +25,7 @@ public class SidebarView extends JPanel implements ISessionController.ISessionCo
 
     protected ISessionController mSessionController;
     protected IChannelController mChannelController;
+    protected IProfileController mProfileController;
     protected User mCurrentUser;
     
     private Set<User> listAllUsers;
@@ -31,9 +35,10 @@ public class SidebarView extends JPanel implements ISessionController.ISessionCo
     
     private JTextField mSearchField;
 
-    public SidebarView(ISessionController sessionController, IChannelController channelController) {
+    public SidebarView(ISessionController sessionController, IChannelController channelController, IProfileController profileController) {
         this.mSessionController = sessionController;
         this.mChannelController = channelController;
+        this.mProfileController = profileController;
         this.mSessionController.addObserver(this);
         this.listAllUsers = new HashSet<>();
         this.listAllUsersFiltered = new HashSet<>();
@@ -143,6 +148,14 @@ public class SidebarView extends JPanel implements ISessionController.ISessionCo
         JLabel userLabel = new JLabel("Utilisateur");
         userLabel.setForeground(COLOR_TEXT);
         userLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        userLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        userLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                ProfileDialog dialog = new ProfileDialog((Frame) SwingUtilities.getWindowAncestor(SidebarView.this), mProfileController, mCurrentUser);
+                dialog.setVisible(true);
+            }
+        });
 
         JButton logoutBtn = new JButton("Déconnexion") {
             @Override

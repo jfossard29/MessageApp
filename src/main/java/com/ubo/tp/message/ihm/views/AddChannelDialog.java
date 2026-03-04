@@ -109,11 +109,25 @@ public class AddChannelDialog extends JDialog {
         cancelBtn.setBorderPainted(false);
         cancelBtn.addActionListener(e -> dispose());
 
-        JButton createBtn = new JButton("Créer");
+        JButton createBtn = new JButton("Créer") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                if (getModel().isArmed()) {
+                    g.setColor(getBackground().darker());
+                } else {
+                    g.setColor(getBackground());
+                }
+                g.fillRect(0, 0, getWidth(), getHeight());
+                super.paintComponent(g);
+            }
+        };
         createBtn.setBackground(new Color(88, 101, 242));
         createBtn.setForeground(Color.WHITE);
         createBtn.setFocusPainted(false);
         createBtn.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        createBtn.setContentAreaFilled(false);
+        createBtn.setOpaque(false);
+        createBtn.setBorderPainted(false);
         createBtn.addActionListener(e -> createChannel());
 
         buttonPanel.add(cancelBtn);

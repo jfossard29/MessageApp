@@ -3,7 +3,20 @@ package main.java.com.ubo.tp.message.ihm.controllers;
 import main.java.com.ubo.tp.message.datamodel.User;
 
 public interface IProfileController {
-    void updateName(String newName);
+    /**
+     * Modifie le nom d'affichage de l'utilisateur courant.
+     * @param newName Le nouveau nom.
+     */
+    void updateDisplayName(String newName);
+
+    /**
+     * Supprime le compte de l'utilisateur courant.
+     */
     void deleteAccount();
+
+    /**
+     * Récupère l'utilisateur courant.
+     * @return L'utilisateur connecté.
+     */
     User getCurrentUser();
 }
